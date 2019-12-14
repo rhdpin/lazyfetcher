@@ -12,10 +12,10 @@ The application is still very basic with fixed settings. See also similar (Rust 
 * OS: Windows (x86/x64)/ MacOS / Linux (x64/ARM)
 * .NET Core 3.0 runtime (and SDK if also building)
 * [Streamlink](https://github.com/streamlink/streamlink)
-* [go-mlbam-proxy](go-mlbam-proxy)
+* [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy)
 
 ## Installation
-You can install the [Streamlink](https://github.com/streamlink/streamlink) according to its installation instructions. [go-mlbam-proxy](go-mlbam-proxy) executable (mlbamproxy.exe) can also be copied from LazyMan installation. Both Streamlink and and go-mlbam-proxy must be either in same directory with LazyFetch executable, or in directory specified by PATH environment variable.
+You can install the [Streamlink](https://github.com/streamlink/streamlink) according to its installation instructions. [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy) executable (mlbamproxy.exe) can also be copied from LazyMan installation. Both Streamlink and and go-mlbam-proxy must be either in same directory with LazyFetch executable, or in directory specified by PATH environment variable.
 
 ## Usage
 Get latest game of your favorite team. It tries to get feed of chosen team (away/home) if available, otherwise it uses first feed found.
