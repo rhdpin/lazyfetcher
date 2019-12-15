@@ -9,8 +9,8 @@ Download [LazyMan](https://github.com/StevensNJD4/LazyMan) streams from command 
 The application is still very basic with fixed settings. See also similar (Rust made) application, [LazyStream](https://github.com/tarkah/lazystream), which is more configurable, but doesn't support downloading yet. 
 
 ## Requirements 
-* OS: Windows (x86/x64)/ MacOS / Linux (x64/ARM)
-* .NET Core 3.0 runtime (and SDK if also building)
+* OS: Windows (x86/x64)/ MacOS / Linux (x64/ARMv7)
+* [.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0) runtime (and SDK if also building)
 * [Streamlink](https://github.com/streamlink/streamlink)
 * [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy)
 
@@ -20,7 +20,7 @@ You can install the [Streamlink](https://github.com/streamlink/streamlink) accor
 ## Usage
 Get latest game of your favorite team. It tries to get feed of chosen team (away/home) if available, otherwise it uses first feed found.
 ```
-$./LazyFetcher -t CAR -p /mnt/download
+$ ./LazyFetcher -t CAR -p /mnt/download
 LazyFetcher 1.0.0.0
 
 Fetching latest feed for 'car'...
@@ -33,7 +33,7 @@ Feed found: 2019-12-12 CAR@VAN (away,FS-CR)
 ```
 Choose the feed from list of found feeds
 ```
-$./LazyFetcher -c
+$ ./LazyFetcher -c
 LazyFetcher 1.0.0.0
 
  1: 2019-12-12 NSH@BUF home (MSG-B)
@@ -68,4 +68,6 @@ LazyFetcher 1.0.0.0
 Choose feed (q to quit): 
 ```
 ## Releases
-No CI set up yet. If you don't want build app yourself, you can contact me. I can then provide binaries for your platform.
+Windows releases contain only the app itself, so [.NET Core runtime](https://dotnet.microsoft.com/download/dotnet-core/3.0) needs to be installed. 
+
+Ubuntu and Linux (ARMv7) releases have also the needed .NET Core binaries, so the size is bigger but no need to install .NET Core separately. After extracting the files on Linux, run `chmod +x LazyFetcher` to make the program executable.
