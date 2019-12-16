@@ -44,7 +44,7 @@ namespace LazyFetcher
                 return;
             }
 
-            Console.WriteLine($"\nDownloading feed: {chosenFeed.Date} {chosenFeed.Away}@{chosenFeed.Home} ({chosenFeed.Type},{chosenFeed.Name})\n");
+            Console.WriteLine($"\nDownloading feed: {chosenFeed.Date} {chosenFeed.Away}@{chosenFeed.Home} ({chosenFeed.Type},{chosenFeed.Name})\n\n");
 
             Download(streamUrl, chosenFeed, targetPath);
         }

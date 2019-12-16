@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace LazyFetcher.Downloader
 {
@@ -70,10 +71,11 @@ namespace LazyFetcher.Downloader
                 {
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
-                    CreateNoWindow = false
+                    CreateNoWindow = false                     
                 }
             };
-            
+
+            _process.OutputDataReceived += Process_OutputDataReceived;
             try
             {
                 _process.Start();
@@ -83,15 +85,33 @@ namespace LazyFetcher.Downloader
                 Console.WriteLine($"Could not start downloader '{StreamLinkAppName}': {e.Message}. Ensure that the downloader application is located in current directory or $PATH.");
                 return;
             }
-
-            // Wait until process exits
-            while (!_process.StandardOutput.EndOfStream)
+            _process.BeginOutputReadLine();
+                        
+            Task.Run(() =>
             {
-                var line = _process.StandardOutput.ReadLine();
-                Console.WriteLine(line);
-                Thread.Sleep(50);
-            }
+                while (!_process.HasExited)
+                {
+                    Thread.Sleep(500);
 
+                    if (File.Exists(request.TargetFileName))
+                    {
+                        var currentSize = new FileInfo(request.TargetFileName).Length;                        
+
+                        Console.SetCursorPosition(0, Console.CursorTop - 1);
+                        Console.WriteLine($"{currentSize / 1024 / 1024} MB written...");
+                    }
+                }
+            });
+
+            _process.WaitForExit();            
+        }
+
+        private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data != null && !e.Data.StartsWith("[cli][info]") && !e.Data.StartsWith("[download]"))
+            {
+                Console.WriteLine(e.Data);
+            }               
         }
     }
 }
