@@ -1,4 +1,5 @@
 # LazyFetcher
+[![Build Status](https://dev.azure.com/rhdpin/rhdpin/_apis/build/status/rhdpin.lazyfetcher?branchName=master)](https://dev.azure.com/rhdpin/rhdpin/_build/latest?definitionId=1&branchName=master)
 
 Download [LazyMan](https://github.com/StevensNJD4/LazyMan) streams from command line. 
 
@@ -6,10 +7,10 @@ Download [LazyMan](https://github.com/StevensNJD4/LazyMan) streams from command 
 * Download the latest game of given team
 * Get the stream URL to be used by a video player
 
-The application is still very basic with fixed settings. See also similar (Rust made) application, [LazyStream](https://github.com/tarkah/lazystream), which is more configurable, but doesn't support downloading yet. 
+The application is still very basic with fixed settings and supports NHL feeds. See also similar (Rust made) application, [LazyStream](https://github.com/tarkah/lazystream), which is more configurable, but doesn't support downloading yet. 
 
 ## Requirements 
-* OS: Windows (x86/x64)/ MacOS / Linux (x64/ARMv7)
+* OS: Windows (x86/x64) / MacOS / Linux (x64/ARMv7)
 * [.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0) runtime (and SDK if also building)
 * [Streamlink](https://github.com/streamlink/streamlink)
 * [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy)
@@ -23,7 +24,7 @@ Get latest game of your favorite team. It tries to get feed of chosen team (away
 $ ./LazyFetcher -t CAR -p /mnt/download
 LazyFetcher 1.0.0.0
 
-Fetching latest feed for 'car'...
+Fetching latest feed for 'CAR'...
 Feed found: 2019-12-12 CAR@VAN (away,FS-CR)
 
 [cli][info] Found matching plugin hls for URL hlsvariant://http://foundurl.m3u8 name_key=bitrate verify=False
@@ -70,4 +71,4 @@ Choose feed (q to quit):
 ## Releases
 Windows releases contain only the app itself, so [.NET Core runtime](https://dotnet.microsoft.com/download/dotnet-core/3.0) needs to be installed. 
 
-Ubuntu and Linux (ARMv7) releases have also the needed .NET Core binaries, so the size is bigger but no need to install .NET Core separately. After extracting the files on Linux, run `chmod +x LazyFetcher` to make the program executable.
+Ubuntu and Linux (ARMv7) releases have also the needed .NET Core binaries, so the size is bigger but no need to install .NET Core separately. After extracting the files on Linux, run `chmod +x LazyFetcher` to make the program executable. MacOS binaries are coming soon.
