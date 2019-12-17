@@ -44,7 +44,7 @@ namespace LazyFetcher
                 return;
             }
 
-            Console.WriteLine($"\nDownloading feed: {chosenFeed.Date} {chosenFeed.Away}@{chosenFeed.Home} ({chosenFeed.Type},{chosenFeed.Name})\n\n");
+            Console.WriteLine($"\nDownloading feed: {chosenFeed.Date} {chosenFeed.Away}@{chosenFeed.Home} ({chosenFeed.Type},{chosenFeed.Name})");
 
             Download(streamUrl, chosenFeed, targetPath);
         }
@@ -66,7 +66,7 @@ namespace LazyFetcher
                 return;
             }
 
-            Console.WriteLine($"Feed found: {feed.Date} {feed.Away}@{feed.Home} ({feed.Type},{feed.Name})\n");
+            Console.WriteLine($"Feed found: {feed.Date} {feed.Away}@{feed.Home} ({feed.Type},{feed.Name})");
 
             Download(streamUrl, feed, targetPath);
         }               
