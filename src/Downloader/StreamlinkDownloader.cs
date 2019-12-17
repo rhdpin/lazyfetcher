@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace LazyFetcher.Downloader
 {
@@ -12,7 +13,7 @@ namespace LazyFetcher.Downloader
     {
         private const string StreamLinkAppName = "streamlink";
         private Process _process = null;
-
+        
         public void Dispose()
         {
             Dispose(true);
@@ -70,10 +71,11 @@ namespace LazyFetcher.Downloader
                 {
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
-                    CreateNoWindow = false
+                    RedirectStandardError = true,
+                    CreateNoWindow = false                     
                 }
             };
-            
+                        
             try
             {
                 _process.Start();
@@ -82,16 +84,54 @@ namespace LazyFetcher.Downloader
             {                
                 Console.WriteLine($"Could not start downloader '{StreamLinkAppName}': {e.Message}. Ensure that the downloader application is located in current directory or $PATH.");
                 return;
-            }
+            }            
+                        
+            Task.Run(() =>
+            {
+                var counter = 1;
+                long previousSize = 0;                                
+                DateTime previousTime = DateTime.Now;
+                double downloadRate = 0;
+                string downloadRateString;
 
-            // Wait until process exits
+                while (!_process.HasExited)
+                {
+                    Thread.Sleep(500);
+                    
+                    if (File.Exists(request.TargetFileName))
+                    {
+                        var currentSize = new FileInfo(request.TargetFileName).Length;
+                        if (counter % 10 == 0)
+                        {                            
+                            var currentTime = DateTime.Now;                            
+                            var secondsElapsed = (currentTime - previousTime).TotalMilliseconds / (double) 1000;
+                            var bytesDownloaded = currentSize - previousSize;
+                            downloadRate = (bytesDownloaded / 1024 / 1024 / secondsElapsed);                            
+                            previousSize = currentSize;
+                            previousTime = currentTime;
+                        }
+                        downloadRateString = (downloadRate > 0) ? downloadRate.ToString("0.0") : "---";                        
+
+                        Console.SetCursorPosition(0, Console.CursorTop);
+                        Console.Write($"Writing stream to file: {currentSize / 1024 / 1024} MB ({downloadRateString} MB/s)");
+                        counter++;
+                    }
+                }
+            });
+
+            _process.WaitForExit();
+            Console.WriteLine();
+
+            // Write Streamlink output to console (other than the regular messages)
             while (!_process.StandardOutput.EndOfStream)
             {
                 var line = _process.StandardOutput.ReadLine();
-                Console.WriteLine(line);
-                Thread.Sleep(50);
-            }
 
+                if (line != null && !line.StartsWith("[cli][info]") && !line.Contains("[download]"))
+                {
+                    Console.WriteLine($"{line}");                    
+                }
+            }            
         }
     }
 }
