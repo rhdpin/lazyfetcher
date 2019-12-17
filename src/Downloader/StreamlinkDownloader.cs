@@ -61,7 +61,7 @@ namespace LazyFetcher.Downloader
             var streamUrl = request.StreamUrl.Replace("https://", "http://");
 
             // Uses fixed stream quality (="best")
-            var streamArgs = $"\"hlsvariant://{streamUrl} name_key=bitrate verify=False\" 670k --http-header " +
+            var streamArgs = $"\"hlsvariant://{streamUrl} name_key=bitrate verify=False\" best --http-header " +
                                 $"\"User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
                                 $"Chrome/59.0.3071.115 Safari/537.36\" --hls-segment-threads=4 {proxyString} -o {request.TargetFileName}";
 
