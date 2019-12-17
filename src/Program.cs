@@ -34,7 +34,8 @@ namespace LazyFetcher
                         }
                         if (!options.OnlyUrl)
                         {
-                            Console.WriteLine($"{Assembly.GetExecutingAssembly().GetName().Name} {Assembly.GetExecutingAssembly().GetName().Version}\n");                            
+                            var version = Assembly.GetExecutingAssembly().GetName().Version;
+                            Console.WriteLine($"{Assembly.GetExecutingAssembly().GetName().Name} {version.Major}.{version.Minor}.{version.Build}\n");                            
                         }                        
                     })
                     .WithNotParsed<Options>((errors) =>

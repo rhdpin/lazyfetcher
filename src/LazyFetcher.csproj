@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <Authors>rhdpin</Authors>
     <Product />
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

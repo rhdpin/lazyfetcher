@@ -21,7 +21,7 @@ You can install the [Streamlink](https://github.com/streamlink/streamlink) accor
 Choose the feed from list of found feeds
 ```
 $ ./LazyFetcher -c
-LazyFetcher 1.0.0.0
+LazyFetcher 1.0.1
 
  1: 2019-12-15 PHI@WPG home (TSN3)
  2: 2019-12-15 PHI@WPG away (NBCS-PH+)
@@ -50,7 +50,7 @@ Writing stream to file: 167 MB (11.8 MB/s)
 Get latest game of your favorite team. It tries to get feed of chosen team (away/home) if available, otherwise it uses first feed found.
 ```
 $ ./LazyFetcher -t DAL -p /mnt/download
-LazyFetcher 1.0.0.0
+LazyFetcher 1.0.1
 
 Fetching latest feed for 'DAL'...
 Feed found: 2019-12-16 EDM@DAL (home,FSSW+)
