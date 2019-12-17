@@ -7,11 +7,10 @@ Download [LazyMan](https://github.com/StevensNJD4/LazyMan) streams from command 
 * Download the latest game of given team
 * Get the stream URL to be used by a video player
 
-The application is still very basic with fixed settings and supports NHL feeds. See also similar (Rust made) application, [LazyStream](https://github.com/tarkah/lazystream). 
+The application ([.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0)) is still very basic with fixed settings and supports NHL feeds. See also similar (Rust made) application, [LazyStream](https://github.com/tarkah/lazystream). 
 
 ## Requirements 
 * OS: Windows (x86/x64) / MacOS / Linux (x64/ARMv7)
-* [.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0) runtime (and SDK if also building)
 * [Streamlink](https://github.com/streamlink/streamlink)
 * [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy)
 
@@ -58,6 +57,6 @@ Feed found: 2019-12-16 EDM@DAL (home,FSSW+)
 Writing stream to file: 343 MB (8.2 MB/s)
 ```
 ## Releases
-Windows releases contain only the app itself, so [.NET Core runtime](https://dotnet.microsoft.com/download/dotnet-core/3.0) needs to be installed. 
+All release packages contain all needed files, so no additional installation of .NET Core runtime is needed. 
 
-Ubuntu and Linux (ARMv7) releases have also the needed .NET Core binaries, so the size is bigger but no need to install .NET Core separately. After extracting the files on Linux, run `chmod +x LazyFetcher` to make the program executable. MacOS binaries are coming soon.
+After extracting the files on Linux, run `chmod +x LazyFetcher` to make the program executable. MacOS binaries are coming soon.
