@@ -63,6 +63,8 @@ namespace LazyFetcher
                 Parser.Default.ParseArguments<Options>(args)
                     .WithParsed<Options>(options =>
                     {
+                        IocContainer.Register<IOptions>(factory => options);
+
                         if (options.Team != null)
                         {
                             feedManager.GetLatest(options.Team, options.TargetPath, options.OnlyUrl);

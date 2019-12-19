@@ -53,9 +53,9 @@ namespace LazyFetcher.Downloader
             }
 
             var proxyString = string.Empty;
-            if (request.IsProxyRequired)
+            if (request.Proxy != null)
             {
-                proxyString = $"--https-proxy https://127.0.0.1:{request.ProxyPort}";
+                proxyString = $"--https-proxy https://127.0.0.1:{request.Proxy.Port}";
             }
 
             var streamUrl = request.StreamUrl.Replace("https://", "http://");
@@ -122,6 +122,7 @@ namespace LazyFetcher.Downloader
             _process.WaitForExit();
             Console.WriteLine();
 
+            var unexpectedOutput = false;
             // Write Streamlink output to console (other than the regular messages)
             while (!_process.StandardOutput.EndOfStream)
             {
@@ -129,9 +130,17 @@ namespace LazyFetcher.Downloader
 
                 if (line != null && !line.StartsWith("[cli][info]") && !line.Contains("[download]"))
                 {
-                    Console.WriteLine($"{line}");                    
+                    Console.WriteLine($"{line}");
+                    unexpectedOutput = true;
                 }
-            }            
+            }  
+            
+            if (unexpectedOutput)
+            {
+                Console.WriteLine("\nLooks like something went wrong. Please check that redirection is configured either by editing " +
+                    "hosts file or by using proxy (parameter '-x' and requires that mlbamproxy is found). " +
+                    "By default application expects that hosts file is edited");
+            }
         }
     }
 }

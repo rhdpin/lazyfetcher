@@ -12,15 +12,37 @@ The application ([.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-co
 ## Requirements 
 * OS: Windows (x86/x64) / MacOS / Linux (x64/ARMv7)
 * [Streamlink](https://github.com/streamlink/streamlink)
-* [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy)
+* Application expects that by default that hosts file has been configure for needed redirection. Alternatively a parameter can be used to use [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy) instead.
 
 ## Installation
-You can install the [Streamlink](https://github.com/streamlink/streamlink) according to its installation instructions. [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy) executable (mlbamproxy.exe) can also be copied from LazyMan installation. Both Streamlink and and go-mlbam-proxy must be either in same directory with LazyFetch executable, or in directory specified by PATH environment variable.
+You can install the [Streamlink](https://github.com/streamlink/streamlink) according to its installation instructions. If hosts file is not edited, [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy) is needed. The executable (mlbamproxy.exe) can also be copied from LazyMan installation. Both Streamlink (and go-mlbam-proxy if needed) must be either in same directory with LazyFetch executable, or in directory specified by PATH environment variable.
 
 ## Usage
-Choose the feed from list of found feeds
 ```
-$ ./LazyFetcher -c
+$ ./LazyFetcher --help
+LazyFetcher 1.0.1
+Copyright (C) 2019 rhdpin
+
+  -c, --choose       Choose the feed from list of found feeds.
+
+  -t, --team         Get latest game for team (three letter abbreviation. E.g. WPG).
+
+  -p, --path         Set target download path.
+
+  -l, --league       Set league (default: NHL).
+
+  -u, --url          Get only URL of the stream but don't download.
+
+  -x, --use-proxy    Use proxy for redirection (required if 'hosts' file has not been edited).
+
+  --help             Display this help screen.
+
+  --version          Display version information.
+```
+
+Choose the feed from list of found feeds and download it using proxy instead of editing hosts file
+```
+$ ./LazyFetcher -x -c -p /mnt/download
 LazyFetcher 1.0.1
 
  1: 2019-12-15 PHI@WPG home (TSN3)
@@ -47,7 +69,7 @@ Choose feed (q to quit): 11
 Downloading feed: 2019-12-16 NSH@NYR (home,MSG)
 Writing stream to file: 167 MB (11.8 MB/s)
 ```
-Get latest game of your favorite team. It tries to get feed of chosen team (away/home) if available, otherwise it uses first feed found.
+Get latest game of your favorite team with hosts file edited. It tries to get feed of chosen team (away/home) if available, otherwise it uses first feed found.
 ```
 $ ./LazyFetcher -t DAL -p /mnt/download
 LazyFetcher 1.0.1
