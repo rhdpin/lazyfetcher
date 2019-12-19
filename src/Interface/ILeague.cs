@@ -8,7 +8,7 @@ namespace LazyFetcher.Interface
     public interface ILeague
     {
         string Name { get; }
-        bool IsProxyRequired { get; }
+        bool IsRedirectionRequired { get; }
         Type ProxyType { get; }
         LeagueType Type { get; }
     }

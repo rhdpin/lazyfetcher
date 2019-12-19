@@ -26,7 +26,7 @@ namespace LazyFetcher
             {
                 Console.WriteLine($"{feed.Id.ToString().PadLeft(2)}: {feed.Date} {feed.Away}@{feed.Home} {feed.Type} ({feed.Name})");
             }
-
+            
             Console.Write("\nChoose feed (q to quit): ");
             var input = Console.ReadLine();
 
@@ -34,7 +34,7 @@ namespace LazyFetcher
             {
                 return;
             }
-
+            
             var chosenFeed = feeds.FirstOrDefault(f => f.Id == int.Parse(input));
             var streamUrl = urlFetcher.GetStreamUrl(chosenFeed);
 
@@ -75,10 +75,12 @@ namespace LazyFetcher
         {
             var fileName = GetTargetFileName(feed, targetPath);
             var league = Program.IocContainer.GetInstance<ILeague>();
+            var options = Program.IocContainer.GetInstance<IOptions>();
+
             IProxy proxy = null;
             try
             {
-                if (league.IsProxyRequired)
+                if (options.UseProxy && league.IsRedirectionRequired)
                 {
                     proxy = Program.IocContainer.GetInstance<IProxy>();
                     if (!proxy.Start())
@@ -86,7 +88,7 @@ namespace LazyFetcher
                         return;
                     }
                 }
-                var downloadRequest = new DownloadRequest() { IsProxyRequired = league.IsProxyRequired, ProxyPort = proxy.Port, StreamUrl = streamUrl, TargetFileName = fileName };
+                var downloadRequest = new DownloadRequest() { Proxy = proxy, StreamUrl = streamUrl, TargetFileName = fileName };
                 var downloader = Program.IocContainer.GetInstance<IDownloader>();
                 downloader.Download(downloadRequest);
             }
