@@ -12,7 +12,7 @@ The application ([.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-co
 ## Requirements 
 * OS: Windows (x86/x64) / MacOS / Linux (x64/ARMv7)
 * [Streamlink](https://github.com/streamlink/streamlink)
-* Application expects that by default that hosts file has been configure for needed redirection. Alternatively a parameter can be used to use [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy) instead.
+* Application expects that by default that hosts file has been configured for needed redirection. Alternatively a parameter can be used to use [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy) instead.
 
 ## Installation
 You can install the [Streamlink](https://github.com/streamlink/streamlink) according to its installation instructions. If hosts file is not edited, [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy) is needed. The executable (mlbamproxy.exe) can also be copied from LazyMan installation. Both Streamlink (and go-mlbam-proxy if needed) must be either in same directory with LazyFetch executable, or in directory specified by PATH environment variable.
