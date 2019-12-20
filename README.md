@@ -85,4 +85,4 @@ Writing stream to file: 343 MB (8.2 MB/s)
 ## Releases
 All release packages contain all needed files, so no additional installation of .NET Core runtime is needed. 
 
-After extracting the files on Linux, run `chmod +x LazyFetcher` to make the program executable. MacOS binaries are coming soon.
+After extracting the files on Linux, run `chmod +x LazyFetcher` to make the program executable.
