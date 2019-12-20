@@ -7,7 +7,7 @@ Download [LazyMan](https://github.com/StevensNJD4/LazyMan) streams from command 
 * Download the latest game of given team
 * Get the stream URL to be used by a video player
 
-The application ([.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0)) is still very basic with fixed settings and supports NHL feeds. See also similar (Rust made) application, [LazyStream](https://github.com/tarkah/lazystream). 
+The application ([.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0)) is basic with many fixed settings and supports only NHL feeds. See also similar (Rust made) application, [LazyStream](https://github.com/tarkah/lazystream). 
 
 ## Requirements 
 * OS: Windows (x86/x64) / MacOS / Linux (x64/ARMv7)
@@ -20,32 +20,34 @@ You can install the [Streamlink](https://github.com/streamlink/streamlink) accor
 ## Usage
 ```
 $ ./LazyFetcher --help
-LazyFetcher 1.0.1
+LazyFetcher 1.0.2
 Copyright (C) 2019 rhdpin
 
-  -c, --choose       Choose the feed from list of found feeds.
+  -c, --choose                Choose the feed from list of found feeds.
 
-  -t, --team         Get latest game for team (three letter abbreviation. E.g. WPG).
+  -t, --team                  Get latest game for team (three letter abbreviation. E.g. WPG).
 
-  -b, --bitrate      Specify bitrate of stream to be downloaded (default: 'best')
+  -b, --bitrate               Specify bitrate of stream to be downloaded (default: 'best')
 
-  -l, --league       Set league (default: NHL).
+  -l, --league                Set league (default: NHL).
 
-  -p, --path         Set target download path.
+  -o, --overwrite-existing    Overwrite file if it already exists (default: download is skipped if file exists)
 
-  -u, --url          Get only URL of the stream but don't download.
+  -p, --path                  Set target download path.
 
-  -x, --use-proxy    Use proxy for redirection (required if 'hosts' file has not been edited).
+  -u, --url                   Get only URL of the stream but don't download.
 
-  --help             Display this help screen.
+  -x, --use-proxy             Use proxy for redirection (required if 'hosts' file has not been edited).
 
-  --version          Display version information.
+  --help                      Display this help screen.
+
+  --version                   Display version information.
 ```
 
 Choose the feed from list of found feeds and download it using proxy instead of editing hosts file
 ```
 $ ./LazyFetcher -x -c -p /mnt/download
-LazyFetcher 1.0.1
+LazyFetcher 1.0.2
 
  1: 2019-12-15 PHI@WPG home (TSN3)
  2: 2019-12-15 PHI@WPG away (NBCS-PH+)
@@ -74,7 +76,7 @@ Writing stream to file: 167 MB (11.8 MB/s)
 Get latest game of your favorite team with hosts file edited. It tries to get feed of chosen team (away/home) if available, otherwise it uses first feed found.
 ```
 $ ./LazyFetcher -t DAL -p /mnt/download
-LazyFetcher 1.0.1
+LazyFetcher 1.0.2
 
 Fetching latest feed for 'DAL'...
 Feed found: 2019-12-16 EDM@DAL (home,FSSW+)
