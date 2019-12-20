@@ -77,6 +77,12 @@ namespace LazyFetcher
             var league = Program.IocContainer.GetInstance<ILeague>();
             var options = Program.IocContainer.GetInstance<IOptions>();
 
+            if (File.Exists(fileName) && !options.OverwriteExistingFile)
+            {
+                Console.WriteLine("Skipping download because file already exists.");
+                return;
+            }
+
             IProxy proxy = null;
             try
             {

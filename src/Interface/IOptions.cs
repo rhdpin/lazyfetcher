@@ -19,5 +19,7 @@ namespace LazyFetcher.Interface
         bool UseProxy { get; set; }
 
         string Bitrate { get; set; }
+
+        bool OverwriteExistingFile { get; set; }
     }
 }
