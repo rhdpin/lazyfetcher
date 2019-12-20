@@ -31,7 +31,7 @@ Copyright (C) 2019 rhdpin
 
   -l, --league                Set league (default: NHL).
 
-  -o, --overwrite-existing    Overwrite file if it already exists (default: download is skipped if file exists)
+  -o, --overwrite             Overwrite file if it already exists (default: download is skipped if file exists)
 
   -p, --path                  Set target download path.
 

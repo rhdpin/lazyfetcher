@@ -17,7 +17,7 @@ namespace LazyFetcher
         [Option('l', "league", Required = false, HelpText = "Set league (default: NHL).")]
         public string League { get; set; }
         
-        [Option('o', "overwrite-existing", Required = false, HelpText = "Overwrite file if it already exists (default: download is skipped if file exists)")]
+        [Option('o', "overwrite", Required = false, HelpText = "Overwrite file if it already exists (default: download is skipped if file exists)")]
         public bool OverwriteExistingFile { get; set; }
 
         [Option('p', "path", Required = false, HelpText = "Set target download path.")]
