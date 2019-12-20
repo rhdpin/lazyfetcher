@@ -17,5 +17,7 @@ namespace LazyFetcher.Interface
         bool OnlyUrl { get; set; }
 
         bool UseProxy { get; set; }
+
+        string Bitrate { get; set; }
     }
 }

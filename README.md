@@ -27,9 +27,11 @@ Copyright (C) 2019 rhdpin
 
   -t, --team         Get latest game for team (three letter abbreviation. E.g. WPG).
 
-  -p, --path         Set target download path.
+  -b, --bitrate      Specify bitrate of stream to be downloaded (default: 'best')
 
   -l, --league       Set league (default: NHL).
+
+  -p, --path         Set target download path.
 
   -u, --url          Get only URL of the stream but don't download.
 

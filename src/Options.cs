@@ -11,16 +11,19 @@ namespace LazyFetcher
         [Option('t', "team", SetName = "team", Required = false, HelpText = "Get latest game for team (three letter abbreviation. E.g. WPG).")]
         public string Team { get; set; }
 
-        [Option('p', "path", Required = false, HelpText = "Set target download path.")]
-        public string TargetPath { get; set; }
-        
+        [Option('b', "bitrate", Required = false, HelpText = "Specify bitrate of stream to be downloaded (default: 'best')")]
+        public string Bitrate { get; set; }
+
         [Option('l', "league", Required = false, HelpText = "Set league (default: NHL).")]
         public string League { get; set; }
 
-        [Option('u', "url", Required = false, HelpText = "Get only URL of the stream but don't download.")]
-        public bool OnlyUrl { get; set; }
+        [Option('p', "path", Required = false, HelpText = "Set target download path.")]
+        public string TargetPath { get; set; }
 
+        [Option('u', "url", Required = false, HelpText = "Get only URL of the stream but don't download.")]
+        public bool OnlyUrl { get; set; }         
+        
         [Option('x', "use-proxy", Required = false, HelpText = "Use proxy for redirection (required if 'hosts' file has not been edited).")]
-        public bool UseProxy { get; set; }
+        public bool UseProxy { get; set; }        
     }
 }

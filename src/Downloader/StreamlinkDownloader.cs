@@ -1,5 +1,6 @@
 ﻿using LazyFetcher.Data;
 using LazyFetcher.Interface;
+using LightInject;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -59,9 +60,11 @@ namespace LazyFetcher.Downloader
             }
 
             var streamUrl = request.StreamUrl.Replace("https://", "http://");
-
-            // Uses fixed stream quality (="best")
-            var streamArgs = $"\"hlsvariant://{streamUrl} name_key=bitrate verify=False\" best --http-header " +
+                        
+            var options = Program.IocContainer.GetInstance<IOptions>();
+            var bitrate = options.Bitrate ?? "best";
+            
+            var streamArgs = $"\"hlsvariant://{streamUrl} name_key=bitrate verify=False\" {bitrate} --http-header " +
                                 $"\"User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
                                 $"Chrome/59.0.3071.115 Safari/537.36\" --hls-segment-threads=4 {proxyString} -o {request.TargetFileName}";
 
