@@ -28,9 +28,8 @@ namespace LazyFetcher
             _league = league;
             _downloader = downloader;
 
-            // Uses fixed time period for now
-            _startDate = DateTime.Now.Subtract(new TimeSpan(48, 0, 0));
-            _endDate = DateTime.Now;            
+            _startDate = _endDate = (options.Date != null) ? DateTime.Parse(options.Date) : DateTime.Now;
+            _startDate = _startDate.Subtract(new TimeSpan(24 * options.Days, 0, 0));            
         }
         public void ChooseFeed(string targetPath, bool getOnlyUrl)
         {            
@@ -39,6 +38,12 @@ namespace LazyFetcher
             foreach (var feed in feeds)
             {
                 Console.WriteLine($"{feed.Id.ToString().PadLeft(2)}: {feed.Date} {feed.Away}@{feed.Home} {feed.Type} ({feed.Name})");
+            }
+
+            if (!feeds.Any())
+            {
+                _messenger.WriteLine("No feeds were found.");
+                return;
             }
             
             Console.Write("\nChoose feed (q to quit): ");

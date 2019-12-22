@@ -23,25 +23,31 @@ $ ./LazyFetcher --help
 LazyFetcher 1.0.2
 Copyright (C) 2019 rhdpin
 
-  -c, --choose                Choose the feed from list of found feeds.
+  -c, --choose       Choose the feed from list of found feeds.
 
-  -t, --team                  Get latest game for team (three letter abbreviation. E.g. WPG).
+  -t, --team         Get latest game for team (three letter abbreviation. E.g. WPG).
 
-  -b, --bitrate               Specify bitrate of stream to be downloaded (default: 'best')
+  -b, --bitrate      Specify bitrate of stream to be downloaded (default: 'best'). Use verbose mode to see available bitrates.
 
-  -l, --league                Set league (default: NHL).
+  -d, --days         (Default: 2) Specify how many days back to search games
 
-  -o, --overwrite             Overwrite file if it already exists (default: download is skipped if file exists)
+  -e, --date         (Default: current date) Specify date to search games from (in format yyyy-MM-dd, e.g. 2019-12-22
 
-  -p, --path                  Set target download path.
+  -l, --league       Set league (default: NHL).
 
-  -u, --url                   Get only URL of the stream but don't download.
+  -o, --overwrite    Overwrite file if it already exists (default: download is skipped if file exists)
 
-  -x, --use-proxy             Use proxy for redirection (required if 'hosts' file has not been edited).
+  -p, --path         Set target download path.
 
-  --help                      Display this help screen.
+  -u, --url          Get only URL of the stream but don't download.
 
-  --version                   Display version information.
+  -v, --verbose      Use verbose mode to get more detailed output
+
+  -x, --use-proxy    Use proxy for redirection (required if 'hosts' file has not been edited).
+
+  --help             Display this help screen.
+
+  --version          Display version information.
 ```
 
 Choose the feed from list of found feeds and download it using proxy instead of editing hosts file

@@ -14,6 +14,12 @@ namespace LazyFetcher
         [Option('b', "bitrate", Required = false, HelpText = "Specify bitrate of stream to be downloaded (default: 'best'). Use verbose mode to see available bitrates.")]
         public string Bitrate { get; set; }
 
+        [Option('d', "days", Required = false, HelpText = "Specify how many days back to search games", Default = 2)]
+        public int Days { get; set; }
+
+        [Option('e', "date", Required = false, HelpText = "(Default: current date) Specify date to search games from (in format yyyy-MM-dd, e.g. 2019-12-22")]
+        public string Date { get; set; }
+
         [Option('l', "league", Required = false, HelpText = "Set league (default: NHL).")]
         public string League { get; set; }
         
@@ -25,11 +31,11 @@ namespace LazyFetcher
 
         [Option('u', "url", Required = false, HelpText = "Get only URL of the stream but don't download.")]
         public bool OnlyUrl { get; set; }
-        
-        [Option('x', "use-proxy", Required = false, HelpText = "Use proxy for redirection (required if 'hosts' file has not been edited).")]
-        public bool UseProxy { get; set; }
 
         [Option('v', "verbose", Required = false, HelpText = "Use verbose mode to get more detailed output")]
         public bool VerboseMode { get; set; }
+
+        [Option('x', "use-proxy", Required = false, HelpText = "Use proxy for redirection (required if 'hosts' file has not been edited).")]
+        public bool UseProxy { get; set; }        
     }
 }

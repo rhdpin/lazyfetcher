@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace LazyFetcher.Interface
 {
     public interface IOptions
@@ -23,5 +20,9 @@ namespace LazyFetcher.Interface
         bool OverwriteExistingFile { get; set; }
 
         bool VerboseMode { get; set; }
+
+        public string Date { get; set; }
+
+        public int Days { get; set; }
     }
 }

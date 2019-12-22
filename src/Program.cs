@@ -37,6 +37,17 @@ namespace LazyFetcher
                         {
                             var version = Assembly.GetExecutingAssembly().GetName().Version;
                             Console.WriteLine($"{Assembly.GetExecutingAssembly().GetName().Name} {version.Major}.{version.Minor}.{version.Build}\n");                            
+                        }
+                        if (options.Days < 0)
+                        {
+                            Console.WriteLine("Value for parameter '-d' or '--days' can't be negative.");
+                            _exitCode = -1;
+                        }
+                        DateTime date;
+                        if (options.Date != null && !DateTime.TryParse(options.Date, out date))
+                        {
+                            Console.WriteLine($"Please check the format of given date string ('{options.Date}'). The date format should be in format yyyy-MM-dd");
+                            _exitCode = -1;
                         }                        
                     })
                     .WithNotParsed<Options>((errors) =>

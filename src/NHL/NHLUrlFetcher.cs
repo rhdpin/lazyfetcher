@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.Json;
 
 namespace LazyFetcher.NHL
@@ -76,11 +75,7 @@ namespace LazyFetcher.NHL
 
         private RootObject GetModel(DateTime start, DateTime end)
         {
-            string startDate, endDate;
-            if (start == null)
-                start = DateTime.Now.Subtract(new TimeSpan(48, 0, 0));
-            if (end == null)
-                end = DateTime.Now;
+            string startDate, endDate;       
 
             startDate = start.ToString("yyyy-MM-dd");
             endDate = end.ToString("yyyy-MM-dd");
