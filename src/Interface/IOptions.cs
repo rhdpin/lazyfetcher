@@ -21,5 +21,7 @@ namespace LazyFetcher.Interface
         string Bitrate { get; set; }
 
         bool OverwriteExistingFile { get; set; }
+
+        bool VerboseMode { get; set; }
     }
 }

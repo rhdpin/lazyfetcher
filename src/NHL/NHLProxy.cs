@@ -9,6 +9,7 @@ namespace LazyFetcher.NHL
     public class NHLProxy : IProxy
     {
         private Process _process = null;
+        private readonly IMessenger _messenger;
 
         public string ExecutablePath { get; }
         public string DestinationDomain => "freegamez.ga";
@@ -33,8 +34,9 @@ namespace LazyFetcher.NHL
             }
         }
 
-        public NHLProxy()
+        public NHLProxy(IMessenger messenger)
         {
+            _messenger = messenger;
             var proxyAppNameFileExtension = string.Empty;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -47,7 +49,10 @@ namespace LazyFetcher.NHL
 
         public bool Start()
         {
-            _process = new Process() { StartInfo = new ProcessStartInfo(ExecutablePath, $"-p {Port} -d {DestinationDomain} -s {SourceDomains}") { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = false }, EnableRaisingEvents = true };
+            var args = $"-p {Port} -d {DestinationDomain} -s {SourceDomains}";
+
+            _messenger.WriteLine($"Starting proxy with command '{ExecutablePath} {args}'", Messenger.MessageCategory.Verbose);
+            _process = new Process() { StartInfo = new ProcessStartInfo(ExecutablePath, args) { UseShellExecute = false, RedirectStandardOutput = true, CreateNoWindow = false }, EnableRaisingEvents = true };
 
             try
             {
@@ -55,7 +60,7 @@ namespace LazyFetcher.NHL
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Could not start proxy '{ExecutablePath}': {e.Message}. Ensure that the proxy application is located in current directory or $PATH.");
+                _messenger.WriteLine($"Could not start proxy '{ExecutablePath}': {e.Message}. Ensure that the proxy application is located in current directory or $PATH.");
                 return false;
             }
 

@@ -1,6 +1,5 @@
 ﻿using LazyFetcher.Data;
 using LazyFetcher.Interface;
-using LightInject;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -14,7 +13,15 @@ namespace LazyFetcher.Downloader
     {
         private const string StreamLinkAppName = "streamlink";
         private Process _process = null;
-        
+        private readonly IMessenger _messenger;
+        private readonly IOptions _options;
+
+        public StreamlinkDownloader(IMessenger messenger, IOptions options)
+        {
+            _messenger = messenger;
+            _options = options;
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -45,7 +52,7 @@ namespace LazyFetcher.Downloader
             var targetDirectory = Path.GetDirectoryName(request.TargetFileName);
             if (request.TargetFileName != null && !targetDirectory.Equals(string.Empty) && !Directory.Exists(targetDirectory))
             {
-                Console.Write("Target path was not found. Do you want to create it? (y/n): ");
+                _messenger.WriteLine("Target path was not found. Do you want to create it? (y/n): ");
                 var cki = Console.ReadKey();
                 if (cki.Key == ConsoleKey.Y)
                 {
@@ -59,14 +66,14 @@ namespace LazyFetcher.Downloader
                 proxyString = $"--https-proxy https://127.0.0.1:{request.Proxy.Port}";
             }
 
-            var streamUrl = request.StreamUrl.Replace("https://", "http://");
-                        
-            var options = Program.IocContainer.GetInstance<IOptions>();
-            var bitrate = options.Bitrate ?? "best";
+            var streamUrl = request.StreamUrl.Replace("https://", "http://");        
+            var bitrate = _options.Bitrate ?? "best";
             
             var streamArgs = $"\"hlsvariant://{streamUrl} name_key=bitrate verify=False\" {bitrate} --http-header " +
                                 $"\"User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
                                 $"Chrome/59.0.3071.115 Safari/537.36\" --hls-segment-threads=4 {proxyString} -f -o {request.TargetFileName}";
+
+            _messenger.WriteLine($"Starting download with command '{StreamLinkAppName} {streamArgs}", Messenger.MessageCategory.Verbose);
 
             _process = new Process()
             {
@@ -85,7 +92,7 @@ namespace LazyFetcher.Downloader
             }
             catch (Exception e)
             {                
-                Console.WriteLine($"Could not start downloader '{StreamLinkAppName}': {e.Message}. Ensure that the downloader application is located in current directory or $PATH.");
+                _messenger.WriteLine($"Could not start downloader '{StreamLinkAppName}': {e.Message}. Ensure that the downloader application is located in current directory or $PATH.");
                 return;
             }            
                         
@@ -115,15 +122,14 @@ namespace LazyFetcher.Downloader
                         }
                         downloadRateString = (downloadRate > 0) ? downloadRate.ToString("0.0") : "---";                        
 
-                        Console.SetCursorPosition(0, Console.CursorTop);
-                        Console.Write($"Writing stream to file: {currentSize / 1024 / 1024} MB ({downloadRateString} MB/s)");
+                        _messenger.OverwriteLine($"Writing stream to file: {currentSize / 1024 / 1024} MB ({downloadRateString} MB/s)");
                         counter++;
                     }
                 }
             });
 
             _process.WaitForExit();
-            Console.WriteLine();
+            _messenger.WriteLine("");
 
             var unexpectedOutput = false;
             // Write Streamlink output to console (other than the regular messages)
@@ -133,14 +139,18 @@ namespace LazyFetcher.Downloader
 
                 if (line != null && !line.StartsWith("[cli][info]") && !line.Contains("[download]"))
                 {
-                    Console.WriteLine($"{line}");
+                    _messenger.WriteLine($"{line}");
                     unexpectedOutput = true;
+                }
+                else if (_options.VerboseMode)
+                {
+                    _messenger.WriteLine($"{line}");
                 }
             }  
             
             if (unexpectedOutput)
             {
-                Console.WriteLine("\nLooks like something went wrong. Please check that redirection is configured either by editing " +
+                _messenger.WriteLine("\nLooks like something went wrong. Please check that redirection is configured either by editing " +
                     "hosts file or by using proxy (parameter '-x' and requires that mlbamproxy is found). " +
                     "By default application expects that hosts file is edited");
             }

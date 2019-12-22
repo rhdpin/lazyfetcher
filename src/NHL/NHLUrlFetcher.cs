@@ -11,6 +11,13 @@ namespace LazyFetcher.NHL
 {
     public class NHLUrlFetcher : IUrlFetcher
     {
+        private IMessenger _messenger;
+
+        public NHLUrlFetcher(IMessenger messenger)
+        {
+            _messenger = messenger;
+        }
+
         public IEnumerable<Feed> GetFeeds(DateTime startDate, DateTime endDate)
         {
             var model = GetModel(startDate, endDate);
@@ -19,6 +26,8 @@ namespace LazyFetcher.NHL
 
         public Feed GetLatestFeedForTeam(string teamName, DateTime startDate, DateTime endDate)
         {
+            _messenger.WriteLine($"Getting latest feed for {teamName} for game played between {startDate} and {endDate}", Messenger.MessageCategory.Verbose);
+
             var model = GetModel(startDate, endDate);
             var feeds = GetFeeds(model);
 
@@ -27,7 +36,7 @@ namespace LazyFetcher.NHL
                 f.Home.Equals(teamName, StringComparison.OrdinalIgnoreCase)).ToList();
             if (feedsWithSelectedTeam.Count == 0)
             {
-                Console.WriteLine($"No game for '{teamName}' was found ({startDate}-{endDate})");
+                _messenger.WriteLine($"No game for '{teamName}' was found ({startDate}-{endDate})");
                 return null;
             }
 
@@ -52,6 +61,7 @@ namespace LazyFetcher.NHL
         public string GetStreamUrl(Feed feed)
         {
             var streamFetchUrl = $"https://nhl.freegamez.ga/getM3U8.php?league=nhl&date={feed.Date}&id={feed.MediaId}&cdn=akc";
+            _messenger.WriteLine($"Trying to get stream URL from {streamFetchUrl}", Messenger.MessageCategory.Verbose);
             string streamUrl;
 
             using (var webClient = new System.Net.WebClient())
@@ -77,6 +87,7 @@ namespace LazyFetcher.NHL
 
             string schedulerUrl = "https://statsapi.web.nhl.com/api/v1/schedule?startDate=" + startDate + "&endDate=" + endDate
                     + "&expand=schedule.teams,schedule.linescore,schedule.broadcasts.all,schedule.game.content.media.epg";
+            _messenger.WriteLine($"Trying to get NHL schedule data from {schedulerUrl}", Messenger.MessageCategory.Verbose);
             RootObject model;
 
             using (var webClient = new System.Net.WebClient())

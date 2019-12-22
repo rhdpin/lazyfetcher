@@ -1,26 +1,40 @@
 ﻿using LazyFetcher.Interface;
 using System;
 using System.IO;
-using LightInject;
 using System.Linq;
 using LazyFetcher.Data;
 
 namespace LazyFetcher
 {
-    public class FeedManager 
+    public class DefaultFeedManager : IFeedManager
     {
+        private readonly IMessenger _messenger;
+        private readonly IUrlFetcher _urlFetcher;
+        private readonly IOptions _options;
+        private readonly ILeague _league;
+        private readonly IDownloader _downloader;
+        private readonly IProxy _proxy;
+
         private DateTime _startDate;
         private DateTime _endDate;
-        public FeedManager()
+
+        public DefaultFeedManager(IMessenger messenger, IUrlFetcher urlFetcher, IOptions options,
+            IProxy proxy, IDownloader downloader, ILeague league)
         {
+            _messenger = messenger;
+            _urlFetcher = urlFetcher;
+            _options = options;
+            _proxy = proxy;
+            _league = league;
+            _downloader = downloader;
+
             // Uses fixed time period for now
             _startDate = DateTime.Now.Subtract(new TimeSpan(48, 0, 0));
             _endDate = DateTime.Now;            
         }
         public void ChooseFeed(string targetPath, bool getOnlyUrl)
-        {
-            var urlFetcher = Program.IocContainer.GetInstance<IUrlFetcher>();
-            var feeds = urlFetcher.GetFeeds(_startDate, _endDate);
+        {            
+            var feeds = _urlFetcher.GetFeeds(_startDate, _endDate);
 
             foreach (var feed in feeds)
             {
@@ -36,7 +50,7 @@ namespace LazyFetcher
             }
             
             var chosenFeed = feeds.FirstOrDefault(f => f.Id == int.Parse(input));
-            var streamUrl = urlFetcher.GetStreamUrl(chosenFeed);
+            var streamUrl = _urlFetcher.GetStreamUrl(chosenFeed);
 
             if (getOnlyUrl)
             {
@@ -44,7 +58,7 @@ namespace LazyFetcher
                 return;
             }
 
-            Console.WriteLine($"\nDownloading feed: {chosenFeed.Date} {chosenFeed.Away}@{chosenFeed.Home} ({chosenFeed.Type},{chosenFeed.Name})");
+            _messenger.WriteLine($"\nDownloading feed: {chosenFeed.Date} {chosenFeed.Away}@{chosenFeed.Home} ({chosenFeed.Type},{chosenFeed.Name})");
 
             Download(streamUrl, chosenFeed, targetPath);
         }
@@ -53,12 +67,11 @@ namespace LazyFetcher
         {
             if (!getOnlyUrl)
             {
-                Console.Write($"Fetching latest feed for '{teamName}'...\n");
+                _messenger.WriteLine($"Fetching latest feed for '{teamName}'...\n");
             }                
 
-            var urlFetcher = Program.IocContainer.GetInstance<IUrlFetcher>();
-            var feed = urlFetcher.GetLatestFeedForTeam(teamName, _startDate, _endDate);            
-            var streamUrl = urlFetcher.GetStreamUrl(feed);
+            var feed = _urlFetcher.GetLatestFeedForTeam(teamName, _startDate, _endDate);            
+            var streamUrl = _urlFetcher.GetStreamUrl(feed);
 
             if (getOnlyUrl)
             {
@@ -66,43 +79,38 @@ namespace LazyFetcher
                 return;
             }
 
-            Console.WriteLine($"Feed found: {feed.Date} {feed.Away}@{feed.Home} ({feed.Type},{feed.Name})");
+            _messenger.WriteLine($"Feed found: {feed.Date} {feed.Away}@{feed.Home} ({feed.Type},{feed.Name})");
 
             Download(streamUrl, feed, targetPath);
         }               
 
         private void Download(string streamUrl, Feed feed, string targetPath)
         {
-            var fileName = GetTargetFileName(feed, targetPath);
-            var league = Program.IocContainer.GetInstance<ILeague>();
-            var options = Program.IocContainer.GetInstance<IOptions>();
+            var fileName = GetTargetFileName(feed, targetPath);            
 
-            if (File.Exists(fileName) && !options.OverwriteExistingFile)
+            if (File.Exists(fileName) && !_options.OverwriteExistingFile)
             {
-                Console.WriteLine("Skipping download because file already exists.");
+                _messenger.WriteLine("Skipping download because file already exists.");
                 return;
             }
-
-            IProxy proxy = null;
+            
             try
             {
-                if (options.UseProxy && league.IsRedirectionRequired)
-                {
-                    proxy = Program.IocContainer.GetInstance<IProxy>();
-                    if (!proxy.Start())
+                if (_options.UseProxy && _league.IsRedirectionRequired)
+                {                    
+                    if (!_proxy.Start())
                     {
                         return;
                     }
                 }
-                var downloadRequest = new DownloadRequest() { Proxy = proxy, StreamUrl = streamUrl, TargetFileName = fileName };
-                var downloader = Program.IocContainer.GetInstance<IDownloader>();
-                downloader.Download(downloadRequest);
+                var downloadRequest = new DownloadRequest() { Proxy = _proxy, StreamUrl = streamUrl, TargetFileName = fileName };
+                _downloader.Download(downloadRequest);
             }
             finally
             {
-                if (proxy != null)
+                if (_proxy != null)
                 {
-                    proxy.Stop();
+                    _proxy.Stop();
                 }
             }
         }

@@ -6,6 +6,7 @@ using LazyFetcher.NHL;
 using LightInject;
 using LazyFetcher.Downloader;
 using LazyFetcher.Data;
+using LazyFetcher.Messenger;
 
 namespace LazyFetcher
 {
@@ -56,14 +57,16 @@ namespace LazyFetcher
                         IocContainer.Register<IProxy, NHLProxy>();
                         IocContainer.Register<IUrlFetcher, NHLUrlFetcher>();                        
                         break;
-                }
-                                
-                var feedManager = new FeedManager();
+                }                                               
 
                 Parser.Default.ParseArguments<Options>(args)
                     .WithParsed<Options>(options =>
                     {
                         IocContainer.Register<IOptions>(factory => options);
+                        IocContainer.Register<IMessenger, ConsoleMessenger>();
+                        IocContainer.Register<IFeedManager, DefaultFeedManager>();
+                        
+                        var feedManager = IocContainer.GetInstance<IFeedManager>();
 
                         if (options.Team != null)
                         {
@@ -79,6 +82,6 @@ namespace LazyFetcher
                         }
                     });
             }
-        }            
+        }              
     }
 }

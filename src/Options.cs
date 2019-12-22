@@ -11,7 +11,7 @@ namespace LazyFetcher
         [Option('t', "team", SetName = "team", Required = false, HelpText = "Get latest game for team (three letter abbreviation. E.g. WPG).")]
         public string Team { get; set; }
 
-        [Option('b', "bitrate", Required = false, HelpText = "Specify bitrate of stream to be downloaded (default: 'best')")]
+        [Option('b', "bitrate", Required = false, HelpText = "Specify bitrate of stream to be downloaded (default: 'best'). Use verbose mode to see available bitrates.")]
         public string Bitrate { get; set; }
 
         [Option('l', "league", Required = false, HelpText = "Set league (default: NHL).")]
@@ -27,6 +27,9 @@ namespace LazyFetcher
         public bool OnlyUrl { get; set; }
         
         [Option('x', "use-proxy", Required = false, HelpText = "Use proxy for redirection (required if 'hosts' file has not been edited).")]
-        public bool UseProxy { get; set; }        
+        public bool UseProxy { get; set; }
+
+        [Option('v', "verbose", Required = false, HelpText = "Use verbose mode to get more detailed output")]
+        public bool VerboseMode { get; set; }
     }
 }
