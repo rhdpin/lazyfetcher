@@ -27,21 +27,21 @@ Copyright (C) 2019 rhdpin
 
   -t, --team         Get latest game for team (three letter abbreviation. E.g. WPG).
 
-  -b, --bitrate      Specify bitrate of stream to be downloaded (default: 'best'). Use verbose mode to see available bitrates.
+  -b, --bitrate      (Default: best) Specify bitrate of stream to be downloaded. Use verbose mode to see available bitrates.
 
   -d, --days         (Default: 2) Specify how many days back to search games
 
   -e, --date         (Default: current date) Specify date to search games from (in format yyyy-MM-dd, e.g. 2019-12-22
 
-  -l, --league       Set league (default: NHL).
+  -l, --league       (Default: NHL) Set league. Only NHL supported currently.
 
-  -o, --overwrite    Overwrite file if it already exists (default: download is skipped if file exists)
+  -o, --overwrite    Overwrite file if it already exists (instead of skipping the download).
 
-  -p, --path         Set target download path.
+  -p, --path         (Default: current directory) Set target download path.
 
   -u, --url          Get only URL of the stream but don't download.
 
-  -v, --verbose      Use verbose mode to get more detailed output
+  -v, --verbose      Use verbose mode to get more detailed output.
 
   -x, --use-proxy    Use proxy for redirection (required if 'hosts' file has not been edited).
 
