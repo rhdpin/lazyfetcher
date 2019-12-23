@@ -1,3 +1,10 @@
+# Dockerfile for building x64 based Linux container
+# The resulting image is big, so there's room for improvement, but it works
+#
+# No support for proxy now, so 'hosts' file addition is defined when running the container
+# Build example: docker build -t rhdpin/lazyfetcher-linux-x64 -f Dockerfile.linux-x64 .
+# Usage example: docker run -it --rm -v /mnt/download:/app/test --add-host mf.svc.nhl.com:178.62.203.238 rhdpin/lazyfetcher-linux-x64 -c -p /app/test
+
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0-bionic AS build
 WORKDIR /app
 
@@ -11,12 +18,6 @@ WORKDIR /app/
 COPY src/. ./src/
 WORKDIR /app/src
 RUN dotnet publish -c Release -o out
-
-# test application -- see: dotnet-docker-unit-testing.md
-#FROM build AS testrunner
-#WORKDIR /app/tests
-#COPY tests/. .
-#ENTRYPOINT ["dotnet", "test", "--logger:trx"]
 
 FROM mcr.microsoft.com/dotnet/core/runtime:3.0-alpine AS runtime
 WORKDIR /app
