@@ -15,11 +15,13 @@ namespace LazyFetcher.Downloader
         private Process _process = null;
         private readonly IMessenger _messenger;
         private readonly IOptions _options;
+        private readonly IProxy _proxy;
 
-        public StreamlinkDownloader(IMessenger messenger, IOptions options)
+        public StreamlinkDownloader(IMessenger messenger, IOptions options, IProxy proxy)
         {
             _messenger = messenger;
             _options = options;
+            _proxy = proxy;
         }
 
         public void Dispose()
@@ -61,9 +63,9 @@ namespace LazyFetcher.Downloader
             }
 
             var proxyString = string.Empty;
-            if (request.Proxy != null)
-            {
-                proxyString = $"--https-proxy https://127.0.0.1:{request.Proxy.Port}";
+            if (request.UseProxy)
+            {                
+                proxyString = $"--https-proxy https://127.0.0.1:{_proxy.Port}";
             }
 
             var streamUrl = request.StreamUrl.Replace("https://", "http://");                    

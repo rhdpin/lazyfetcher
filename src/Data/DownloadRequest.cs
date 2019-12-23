@@ -7,6 +7,6 @@ namespace LazyFetcher.Data
     {
         public string StreamUrl { get; set; }
         public string TargetFileName { get; set; }
-        public IProxy Proxy { get; set; }
+        public bool UseProxy { get; set; }
     }
 }

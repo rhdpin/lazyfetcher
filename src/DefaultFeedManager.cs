@@ -108,7 +108,7 @@ namespace LazyFetcher
                         return;
                     }
                 }
-                var downloadRequest = new DownloadRequest() { Proxy = _proxy, StreamUrl = streamUrl, TargetFileName = fileName };
+                var downloadRequest = new DownloadRequest() { UseProxy = _options.UseProxy, StreamUrl = streamUrl, TargetFileName = fileName };
                 _downloader.Download(downloadRequest);
             }
             finally
