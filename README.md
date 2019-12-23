@@ -20,7 +20,7 @@ You can install the [Streamlink](https://github.com/streamlink/streamlink) accor
 ## Usage
 ```
 $ ./LazyFetcher --help
-LazyFetcher 1.0.2
+LazyFetcher 1.0.3
 Copyright (C) 2019 rhdpin
 
   -c, --choose       Choose the feed from list of found feeds.
@@ -53,7 +53,7 @@ Copyright (C) 2019 rhdpin
 Choose the feed from list of found feeds and download it using proxy instead of editing hosts file
 ```
 $ ./LazyFetcher -x -c -p /mnt/download
-LazyFetcher 1.0.2
+LazyFetcher 1.0.3
 
  1: 2019-12-15 PHI@WPG home (TSN3)
  2: 2019-12-15 PHI@WPG away (NBCS-PH+)
@@ -82,7 +82,7 @@ Writing stream to file: 167 MB (11.8 MB/s)
 Get latest game of your favorite team with hosts file edited. It tries to get feed of chosen team (away/home) if available, otherwise it uses first feed found.
 ```
 $ ./LazyFetcher -t DAL -p /mnt/download
-LazyFetcher 1.0.2
+LazyFetcher 1.0.3
 
 Fetching latest feed for 'DAL'...
 Feed found: 2019-12-16 EDM@DAL (home,FSSW+)
