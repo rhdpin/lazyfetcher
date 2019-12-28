@@ -1,0 +1,9 @@
+.git
+**/.vs
+**/out
+**/bin
+**/obj
+**/*.user
+**/mlbamproxy
+*/*/temp*
+temp?
