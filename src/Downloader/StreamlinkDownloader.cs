@@ -77,7 +77,7 @@ namespace LazyFetcher.Downloader
             
             var streamArgs = $"\"hlsvariant://{streamUrl} name_key=bitrate verify=False\" {_options.Bitrate} --http-header " +
                                 $"\"User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
-                                $"Chrome/59.0.3071.115 Safari/537.36\" --hls-segment-threads=4 {proxyString} {loggingString} -f -l debug -v -o {request.TargetFileName}";
+                                $"Chrome/59.0.3071.115 Safari/537.36\" --hls-segment-threads=4 {proxyString} {loggingString} -f -o {request.TargetFileName}";
 
             _messenger.WriteLine($"Starting download with command '{StreamLinkAppName} {streamArgs}", Messenger.MessageCategory.Verbose);
 
