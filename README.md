@@ -1,7 +1,7 @@
 # LazyFetcher
 [![Build Status](https://dev.azure.com/rhdpin/rhdpin/_apis/build/status/rhdpin.lazyfetcher?branchName=master)](https://dev.azure.com/rhdpin/rhdpin/_build/latest?definitionId=1&branchName=master)
 
-Download [LazyMan](https://github.com/StevensNJD4/LazyMan) streams from command line. 
+A command-line interface for [LazyMan](https://github.com/StevensNJD4/LazyMan). 
 
 * Choose a stream to download from list of feeds
 * Download the latest game of given team
