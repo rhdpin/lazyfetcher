@@ -166,11 +166,15 @@ namespace LazyFetcher.Downloader
             }
             else
             {
-                // Output all output from Streamlink
+                _process.WaitForExit();
+
+                _messenger.WriteLine("Full output from Streamlink is displayed after process has exited. Please wait.", Messenger.MessageCategory.Verbose);
+
+                // Output all output from Streamlink after process has exited
                 while (!_process.StandardOutput.EndOfStream)
                 {
                     Thread.Sleep(200);
-                    Console.WriteLine(_process.StandardOutput.ReadLine());
+                    _messenger.WriteLine(_process.StandardOutput.ReadLine(), Messenger.MessageCategory.Verbose);
                 }
             }             
         }
