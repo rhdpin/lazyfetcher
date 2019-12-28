@@ -2,7 +2,8 @@
 #
 # No support for proxy now, so 'hosts' file addition is defined when running the container
 # Build example: docker build -t lazyfetcher-linux-arm -f linux-arm.Dockerfile .
-# Usage example: docker run -it --rm -v /host/dir:/container/dir --add-host mf.svc.nhl.com:178.62.203.238 lazyfetcher-linux-arm -c -p /container/dir
+# Usage example: docker run -it --rm -v /host/dir:/container/dir --add-host targethostname:ipaddress lazyfetcher-linux-arm -c -p /container/dir
+#                Replace 'targethostname' and 'ipaddress' with values you'd put to hosts file normally
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0-bionic-arm32v7 as build
 WORKDIR /app
