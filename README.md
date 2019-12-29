@@ -15,12 +15,21 @@ The application ([.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-co
 * Application expects that by default that hosts file has been configured for needed redirection. Alternatively a parameter can be used to use [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy) instead.
 
 ## Installation
-You can install the [Streamlink](https://github.com/streamlink/streamlink) according to its installation instructions. If hosts file is not edited, [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy) is needed. The executable (mlbamproxy.exe) can also be copied from LazyMan installation. Both Streamlink (and go-mlbam-proxy if needed) must be either in same directory with LazyFetch executable, or in directory specified by PATH environment variable.
+### Method 1: Download released binaries and install dependencies
+Download the compiled binary files from [Releases](https://github.com/rhdpin/lazyfetcher/releases). Then you can install the [Streamlink](https://github.com/streamlink/streamlink) according to its installation instructions. 
+
+If hosts file is not edited, [go-mlbam-proxy](https://github.com/jwallet/go-mlbam-proxy) is needed. The executable (mlbamproxy.exe) can also be copied from LazyMan installation. Both Streamlink (and go-mlbam-proxy if needed) must be either in same directory with LazyFetch executable, or in directory specified by PATH environment variable.
+### Method 2: Docker
+Docker method is good because you get all done with one command. Currently the image size is big though (200-300MB). Currently it supports only 'hosts' editing approach, but the good thing is that it does not interfere with hosts file on your Docker host machine, but only the container.
+1. Install Docker on your host
+2. Run the container with command like: `docker run -it --rm -v /mnt/download:/app/download --add-host targethostname:hostipaddress rhdpin/lazyfetcher:x64 -c -p /app/download`
+
+Parameter `-v` binds a folder from host to container. In example command host folder is `/mnt/download` and it's mapped to `/app/download` in container. Parameter `--add-host` adds redirection to `hosts` file of the container. Use the same values for it as what you use with `hosts` file. `rhdpin/lazyfetcher:x64` is image name - replace `x64` with `arm32v7` to get a image for Raspberry Pi. Rest of the parameters are for the application itself.
 
 ## Usage
 ```
 $ ./LazyFetcher --help
-LazyFetcher 1.0.3
+LazyFetcher 1.0.4
 Copyright (C) 2019 rhdpin
 
   -c, --choose       Choose the feed from list of found feeds.
@@ -53,7 +62,7 @@ Copyright (C) 2019 rhdpin
 Choose the feed from list of found feeds and download it using proxy instead of editing hosts file
 ```
 $ ./LazyFetcher -x -c -p /mnt/download
-LazyFetcher 1.0.3
+LazyFetcher 1.0.4
 
  1: 2019-12-15 PHI@WPG home (TSN3)
  2: 2019-12-15 PHI@WPG away (NBCS-PH+)
@@ -82,7 +91,7 @@ Writing stream to file: 167 MB (11.8 MB/s)
 Get latest game of your favorite team with hosts file edited. It tries to get feed of chosen team (away/home) if available, otherwise it uses first feed found.
 ```
 $ ./LazyFetcher -t DAL -p /mnt/download
-LazyFetcher 1.0.3
+LazyFetcher 1.0.4
 
 Fetching latest feed for 'DAL'...
 Feed found: 2019-12-16 EDM@DAL (home,FSSW+)
