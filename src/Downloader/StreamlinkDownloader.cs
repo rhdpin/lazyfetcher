@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -80,103 +81,124 @@ namespace LazyFetcher.Downloader
                                 $"Chrome/59.0.3071.115 Safari/537.36\" --hls-segment-threads=4 {proxyString} {loggingString} -f -o {request.TargetFileName}";
 
             _messenger.WriteLine($"Starting download with command '{StreamLinkAppName} {streamArgs}", Messenger.MessageCategory.Verbose);
-
-            _process = new Process()
-            {
-                StartInfo = new ProcessStartInfo(streamLinkAppName, streamArgs)
-                {
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = false                     
-                }
-            };
                         
-            try
+            using (Process process = new Process())
             {
-                _process.Start();
-            }
-            catch (Exception e)
-            {                
-                _messenger.WriteLine($"Could not start downloader '{StreamLinkAppName}': {e.Message}. Ensure that the downloader application is located in current directory or $PATH.");
-                return;
-            }            
+                process.StartInfo.FileName = streamLinkAppName;
+                process.StartInfo.Arguments = streamArgs;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
 
-            if (!_options.VerboseMode)                        
-            {
-                Task.Run(() =>
+                StringBuilder output = new StringBuilder();                
+
+                using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))                
                 {
-                    var counter = 1;
-                    long previousSize = 0;                                
-                    DateTime previousTime = DateTime.Now;
-                    double downloadRate = 0;
-                    string downloadRateString;
-
-                    while (!_process.HasExited)
-                    {
-                        Thread.Sleep(500);
-                        
-                        if (File.Exists(request.TargetFileName))
+                    process.OutputDataReceived += (sender, e) => {
+                        if (e.Data == null)
                         {
-                            var currentSize = new FileInfo(request.TargetFileName).Length;
-                            if (counter % 10 == 0)
-                            {                            
-                                var currentTime = DateTime.Now;                            
-                                var secondsElapsed = (currentTime - previousTime).TotalMilliseconds / (double) 1000;
-                                var bytesDownloaded = currentSize - previousSize;
-                                downloadRate = (bytesDownloaded / 1024 / 1024 / secondsElapsed);                            
-                                previousSize = currentSize;
-                                previousTime = currentTime;
-                            }
-                            downloadRateString = (downloadRate > 0) ? downloadRate.ToString("0.0") : "---";                        
+                            outputWaitHandle.Set();
+                        }
+                        else
+                        {
+                            output.AppendLine(e.Data);
+                        }
+                    };                    
 
-                            _messenger.OverwriteLine($"Writing stream to file: {currentSize / 1024 / 1024} MB ({downloadRateString} MB/s)");
-                            counter++;
+                    try
+                    {
+                        process.Start();
+                    }
+                    catch (Exception e)
+                    {
+                        _messenger.WriteLine($"Could not start downloader '{StreamLinkAppName}': {e.Message}. Ensure that the downloader application is located in current directory or $PATH.");
+                        return;
+                    }
+
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+
+                    if (!_options.VerboseMode)
+                    {
+                        Task.Run(() =>
+                        {
+                            var counter = 1;
+                            long previousSize = 0;
+                            DateTime previousTime = DateTime.Now;
+                            double downloadRate = 0;
+                            string downloadRateString;
+
+                            while (process != null && !process.HasExited)
+                            {
+                                Thread.Sleep(500);
+
+                                if (File.Exists(request.TargetFileName))
+                                {
+                                    var currentSize = new FileInfo(request.TargetFileName).Length;
+                                    if (counter % 10 == 0)
+                                    {
+                                        var currentTime = DateTime.Now;
+                                        var secondsElapsed = (currentTime - previousTime).TotalMilliseconds / (double)1000;
+                                        var bytesDownloaded = currentSize - previousSize;
+                                        downloadRate = (bytesDownloaded / 1024 / 1024 / secondsElapsed);
+                                        previousSize = currentSize;
+                                        previousTime = currentTime;
+                                    }
+                                    downloadRateString = (downloadRate > 0) ? downloadRate.ToString("0.0") : "---";
+
+                                    _messenger.OverwriteLine($"Writing stream to file: {currentSize / 1024 / 1024} MB ({downloadRateString} MB/s)");
+                                    counter++;
+                                }
+                            }
+                        });
+                       
+                        _messenger.WriteLine("");
+
+                        process.WaitForExit();
+
+                        var unexpectedOutput = false;
+
+                        // Write Streamlink output to console (other than the regular messages)                        
+                        using (var stringReader = new StringReader(output.ToString()))
+                        {
+                            string line = null;
+                            do
+                            {
+                                line = stringReader.ReadLine();
+
+                                if (line != null)
+                                {
+                                    if (!line.StartsWith("[cli][info]") && !line.Contains("[download]"))
+                                    {
+                                        _messenger.WriteLine($"{line}");
+                                        unexpectedOutput = true;
+                                    }
+                                    else if (_options.VerboseMode)
+                                    {
+                                        _messenger.WriteLine($"{line}");
+                                    }
+                                }
+                            } while (line != null);
+                        }                        
+
+                        if (unexpectedOutput)
+                        {
+                            _messenger.WriteLine("\nLooks like something went wrong. Please check that redirection is configured either by editing " +
+                                "hosts file or by using proxy (parameter '-x' and requires that mlbamproxy is found). " +
+                                "By default application expects that hosts file is edited");
                         }
                     }
-                });
-                
-                _process.WaitForExit();
-                _messenger.WriteLine("");
-
-                var unexpectedOutput = false;
-                
-                // Write Streamlink output to console (other than the regular messages)
-                while (!_process.StandardOutput.EndOfStream)
-                {
-                    var line = _process.StandardOutput.ReadLine();
-
-                    if (line != null && !line.StartsWith("[cli][info]") && !line.Contains("[download]"))
+                    else
                     {
-                        _messenger.WriteLine($"{line}");
-                        unexpectedOutput = true;
+                        _messenger.WriteLine("Full output from Streamlink is displayed after process has exited. Please wait.", Messenger.MessageCategory.Verbose);
+
+                        process.WaitForExit();
+
+                        // Output all output from Streamlink after process has exited
+                        _messenger.WriteLine(output.ToString());
                     }
-                    else if (_options.VerboseMode)
-                    {
-                        _messenger.WriteLine($"{line}");
-                    }
-                }  
-
-                if (unexpectedOutput)
-                {
-                    _messenger.WriteLine("\nLooks like something went wrong. Please check that redirection is configured either by editing " +
-                        "hosts file or by using proxy (parameter '-x' and requires that mlbamproxy is found). " +
-                        "By default application expects that hosts file is edited");            
-                }            
-            }
-            else
-            {
-                _process.WaitForExit();
-
-                _messenger.WriteLine("Full output from Streamlink is displayed after process has exited. Please wait.", Messenger.MessageCategory.Verbose);
-
-                // Output all output from Streamlink after process has exited
-                while (!_process.StandardOutput.EndOfStream)
-                {
-                    Thread.Sleep(200);
-                    _messenger.WriteLine(_process.StandardOutput.ReadLine(), Messenger.MessageCategory.Verbose);
                 }
-            }             
+            }            
         }
     }
 }
