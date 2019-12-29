@@ -22,9 +22,12 @@ If hosts file is not edited, [go-mlbam-proxy](https://github.com/jwallet/go-mlba
 ### Method 2: Docker
 Docker method is good because you get all done with one command. Currently the image size is big though (200-300MB). Currently it supports only 'hosts' editing approach, but the good thing is that it does not interfere with hosts file on your Docker host machine, but only the container.
 1. Install Docker on your host
-2. Run the container with command like: `docker run -it --rm -v /mnt/download:/app/download --add-host targethostname:hostipaddress rhdpin/lazyfetcher:linux-x64 -c -p /app/download`
+2. Run the container with command like: 
+`docker run -it --rm -v /mnt/download:/app/download --add-host targethostname:hostipaddress rhdpin/lazyfetcher:linux-x64 -c -p /app/download`
 
-Parameter `-v` binds a folder from host to container. In example command host folder is `/mnt/download` and it's mapped to `/app/download` in container. Parameter `--add-host` adds redirection to `hosts` file of the container. Use the same values for it as what you use with `hosts` file. `rhdpin/lazyfetcher:linux-x64` is image name - replace `linux-x64` with `linux-arm32v7` to get a image for ARMv7 device like Raspberry Pi. Rest of the parameters are for the application itself.
+Parameter `-v` binds a folder from host to container. In example command host folder is `/mnt/download` and it's mapped to `/app/download` in container. Parameter `--add-host` adds redirection to `hosts` file of the container, so replace `targethostname` and `hostipaddress` with same values which you use in `hosts` file with LazyMan. 
+
+`rhdpin/lazyfetcher:linux-x64` is the image name to be used. Replace `linux-x64` with `linux-arm32v7` to get a image for ARMv7 device like Raspberry Pi. Rest of the parameters are for the LazyFetcher itself.
 
 ## Usage
 ```
