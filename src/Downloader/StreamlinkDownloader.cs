@@ -152,9 +152,8 @@ namespace LazyFetcher.Downloader
                             }
                         });
                        
-                        _messenger.WriteLine("");
-
                         process.WaitForExit();
+                        _messenger.WriteLine("");
 
                         var unexpectedOutput = false;
 
