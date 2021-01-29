@@ -59,7 +59,7 @@ namespace LazyFetcher.NHL
 
         public string GetStreamUrl(Feed feed)
         {
-            var streamFetchUrl = $"https://nhl.freegamez.ga/getM3U8.php?league=nhl&date={feed.Date}&id={feed.MediaId}&cdn=akc";
+            var streamFetchUrl = $"https://freegamez.ga/getM3U8.php?league=nhl&date={feed.Date}&id={feed.MediaId}&cdn=akc";
             _messenger.WriteLine($"Trying to get stream URL from {streamFetchUrl}", Messenger.MessageCategory.Verbose);
             string streamUrl;
 
