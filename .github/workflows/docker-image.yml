@@ -12,7 +12,17 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    steps:
+    steps:    
     - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file linux-x64.Dockerfile --tag rhdpin/lazystream:1.0.5-linux-x64
+    - name: Login to DockerHub Registry
+      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin    
+    - name: Build the tagged Docker image
+      run: docker build . --file linux-x64.Dockerfile --tag rhdpin/lazyfetcher:1.0.5-linux-x64
+    - name: Push the tagged Docker image
+      run: docker push rhdpin/lazyfetcher:1.0.5-linux-x64
+    - name: Build the latest Docker image
+      run: docker build . --file Dockerfile --tag rhdpin/lazyfetcher:linux-x64
+    - name: Push the latest Docker image
+      run: docker push rhdpin/lazyfetcher:linux-x64
+
+
