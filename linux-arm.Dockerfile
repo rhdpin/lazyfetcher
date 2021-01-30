@@ -15,7 +15,7 @@ RUN dotnet restore
 WORKDIR /app/
 COPY src/. ./src/
 WORKDIR /app/src
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -r linux-arm -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/runtime:3.1-bionic-arm32v7 as runtime
 WORKDIR /app
