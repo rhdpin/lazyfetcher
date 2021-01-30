@@ -8,8 +8,7 @@ on:
 
 jobs:
 
-  build:
-
+  x64:
     runs-on: ubuntu-latest
 
     steps:    
@@ -25,6 +24,14 @@ jobs:
       run: docker build . --file linux-x64.Dockerfile --tag rhdpin/lazyfetcher:linux-x64
     - name: Push the latest Docker image for linux-x64
       run: docker push rhdpin/lazyfetcher:linux-x64
+
+  arm:
+    runs-on: self-hosted
+
+    steps:    
+    - uses: actions/checkout@v2
+    - name: Login to DockerHub Registry
+      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin    
 
     - name: Build the tagged Docker image for linux-arm
       run: docker build . --file linux-arm.Dockerfile --tag rhdpin/lazyfetcher:1.0.5-linux-arm32v7
