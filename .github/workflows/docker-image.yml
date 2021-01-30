@@ -21,7 +21,7 @@ jobs:
     - name: Push the tagged Docker image
       run: docker push rhdpin/lazyfetcher:1.0.5-linux-x64
     - name: Build the latest Docker image
-      run: docker build . --file Dockerfile --tag rhdpin/lazyfetcher:linux-x64
+      run: docker build . --file linux-x64.Dockerfile --tag rhdpin/lazyfetcher:linux-x64
     - name: Push the latest Docker image
       run: docker push rhdpin/lazyfetcher:linux-x64
 
