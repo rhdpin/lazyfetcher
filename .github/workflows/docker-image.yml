@@ -49,7 +49,7 @@ jobs:
     - name: Build
       run: dotnet publish -c release -r linux-arm src/           
     - name: Zip
-      run: tar -czvf -r linux-arm.zip src/bin/Release/netcoreapp3.1/linux-arm/publish
+      run: tar -czvf linux-arm.zip src/bin/Release/netcoreapp3.1/linux-arm/publish
     - uses: actions/upload-artifact@v2
       with:
         name: linux-arm
