@@ -20,7 +20,11 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore src/
     - name: Build
-      run: dotnet build --no-restore src/
+      run: dotnet publish -c release -r linux-x64 src/       
+    - uses: actions/upload-artifact@v2
+      with:
+        name: x64-binaries
+        path: src/**/linux-x64
     #- name: Test
     #  run: dotnet test --no-build --verbosity normal
 
