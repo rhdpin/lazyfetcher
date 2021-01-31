@@ -7,39 +7,55 @@ on:
     branches: [ master ]
 
 jobs:
+  build:
 
-  x64:
     runs-on: ubuntu-latest
 
-    steps:    
+    steps:
     - uses: actions/checkout@v2
-    - name: Login to DockerHub Registry
-      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore src/
+    #- name: Test
+    #  run: dotnet test --no-build --verbosity normal
 
-    - name: Build the tagged Docker image for linux-x64
-      run: docker build . --file linux-x64.Dockerfile --tag rhdpin/lazyfetcher:1.0.5-linux-x64
-    - name: Push the tagged Docker image for linux-x64
-      run: docker push rhdpin/lazyfetcher:1.0.5-linux-x64
-    - name: Build the latest Docker image for linux-x64
-      run: docker build . --file linux-x64.Dockerfile --tag rhdpin/lazyfetcher:linux-x64
-    - name: Push the latest Docker image for linux-x64
-      run: docker push rhdpin/lazyfetcher:linux-x64
+  # x64:
+  #   runs-on: ubuntu-latest
 
-  arm:
-    runs-on: self-hosted
+  #   steps:    
+  #   - uses: actions/checkout@v2
+  #   - name: Login to DockerHub Registry
+  #     run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin    
 
-    steps:    
-    - uses: actions/checkout@v2
-    - name: Login to DockerHub Registry
-      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin    
+  #   - name: Build the tagged Docker image for linux-x64
+  #     run: docker build . --file linux-x64.Dockerfile --tag rhdpin/lazyfetcher:1.0.5-linux-x64
+  #   - name: Push the tagged Docker image for linux-x64
+  #     run: docker push rhdpin/lazyfetcher:1.0.5-linux-x64
+  #   - name: Build the latest Docker image for linux-x64
+  #     run: docker build . --file linux-x64.Dockerfile --tag rhdpin/lazyfetcher:linux-x64
+  #   - name: Push the latest Docker image for linux-x64
+  #     run: docker push rhdpin/lazyfetcher:linux-x64
 
-    - name: Build the tagged Docker image for linux-arm
-      run: docker build . --file linux-arm.Dockerfile --tag rhdpin/lazyfetcher:1.0.5-linux-arm32v7
-    - name: Push the tagged Docker image for linux-arm
-      run: docker push rhdpin/lazyfetcher:1.0.5-linux-arm32v7
-    - name: Build the latest Docker image for linux-arm
-      run: docker build . --file linux-arm.Dockerfile --tag rhdpin/lazyfetcher:linux-arm32v7
-    - name: Push the latest Docker image for linux-arm
-      run: docker push rhdpin/lazyfetcher:linux-arm32v7
+  # arm:
+  #   runs-on: self-hosted
+
+  #   steps:    
+  #   - uses: actions/checkout@v2
+  #   - name: Login to DockerHub Registry
+  #     run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin    
+
+  #   - name: Build the tagged Docker image for linux-arm
+  #     run: docker build . --file linux-arm.Dockerfile --tag rhdpin/lazyfetcher:1.0.5-linux-arm32v7
+  #   - name: Push the tagged Docker image for linux-arm
+  #     run: docker push rhdpin/lazyfetcher:1.0.5-linux-arm32v7
+  #   - name: Build the latest Docker image for linux-arm
+  #     run: docker build . --file linux-arm.Dockerfile --tag rhdpin/lazyfetcher:linux-arm32v7
+  #   - name: Push the latest Docker image for linux-arm
+  #     run: docker push rhdpin/lazyfetcher:linux-arm32v7
 
 
