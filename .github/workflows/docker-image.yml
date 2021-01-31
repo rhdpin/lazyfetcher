@@ -21,12 +21,13 @@ jobs:
       run: dotnet publish -c release -r linux-x64 src/       
     - name: Build win10-x64
       run: dotnet publish -c release -r win10-x64 src/     
-    - name: Echo
-      run: echo $(pwd)
+    - name: Build osx.10.15-x64
+      run: dotnet publish -c release -r osx.10.15-x64 src/        
     - name: Zip
       run: |
-        zip -r linux-x64.zip src/bin/Release/netcoreapp3.1/linux-x64/publish
+        tar -czvf linux-x64.zip src/bin/Release/netcoreapp3.1/linux-x64/publish
         zip -r win10-x64.zip src/bin/Release/netcoreapp3.1/win10-x64/publish
+        zip -r osx.10.15-x64.zip src/bin/Release/netcoreapp3.1/osx.10.15-x64/publish
     - uses: actions/upload-artifact@v2
       with:
         name: linux-x64
@@ -35,6 +36,10 @@ jobs:
       with:
         name: win10-x64
         path: win10-x64.zip
+    - uses: actions/upload-artifact@v2
+      with:
+        name: osx.10.15-x64
+        path: osx.10.15-x64.zip
   publish-linux-arm:
     runs-on: self-hosted
     steps:
@@ -42,11 +47,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore src/
     - name: Build
-      run: dotnet publish -c release -r linux-arm src/       
-    - name: Echo
-      run: echo $(pwd)
+      run: dotnet publish -c release -r linux-arm src/           
     - name: Zip
-      run: zip -r linux-arm.zip src/bin/Release/netcoreapp3.1/linux-arm/publish
+      run: tar -czvf -r linux-arm.zip src/bin/Release/netcoreapp3.1/linux-arm/publish
     - uses: actions/upload-artifact@v2
       with:
         name: linux-arm
