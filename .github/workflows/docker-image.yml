@@ -5,59 +5,53 @@ on:
     types: [published]
 
 jobs:
-  # github:
-  #   name: Publish and add binaries to release
-  #   strategy:
-  #     matrix: 
-  #       kind: ['linux-arm', 'linux-x64', 'windows', 'macOS']
-  #       include:
-  #         - kind: linux-arm
-  #           os: self-hosted
-  #           target: linux-arm
-  #         - kind: linux-x64
-  #           os: ubuntu-latest
-  #           target: linux-x64
-  #         - kind: windows
-  #           os: windows-latest
-  #           target: win-x64
-  #         - kind: macOS
-  #           os: macos-latest
-  #           target: osx-x64
-  #   runs-on: ${{ matrix.os }}  
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Setup .NET
-  #     uses: actions/setup-dotnet@v1
-  #     with:
-  #       dotnet-version: 5.0.x
-  #   - name: Restore dependencies
-  #     run: dotnet restore src/
-  #   - name: Build
-  #     shell: bash
-  #     run: |
-  #       tag=$(git describe --tags --abbrev=0)
-  #       release_name="LazyFetcher-${{ matrix.target }}"
-  #       # Build everything
-  #       dotnet publish src/ --runtime "${{ matrix.target }}" -c Release -o "$release_name"
-  #       # Pack files
-  #       if [ "${{ matrix.target }}" == "win-x64" ]; then
-  #         # Pack to zip for Windows
-  #         7z a -tzip "${release_name}.zip" "./${release_name}/*"
-  #       else
-  #       tar czvf "${release_name}.tar.gz" "$release_name"
-  #       fi
-  #       # Delete output directory
-  #       rm -r "$release_name"
-  #   - name: Publish
-  #     uses: softprops/action-gh-release@v1
-  #     with:
-  #       files: "LazyFetcher*"
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  github:
+    name: Publish binaries to release
+    strategy:
+      matrix: 
+        kind: ['linux-arm', 'linux-x64', 'windows', 'macOS']
+        include:
+          - kind: linux-arm
+            os: self-hosted
+            target: linux-arm
+          - kind: linux-x64
+            os: ubuntu-latest
+            target: linux-x64
+          - kind: windows
+            os: windows-latest
+            target: win-x64
+          - kind: macOS
+            os: macos-latest
+            target: osx-x64
+    runs-on: ${{ matrix.os }}  
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore src/
+    - name: Build
+      shell: bash
+      run: |
+        tag=$(git describe --tags --abbrev=0)
+        release_name="LazyFetcher-${{ matrix.target }}"        
+        dotnet publish src/ --runtime "${{ matrix.target }}" -c Release -o "$release_name"        
+        if [ "${{ matrix.target }}" == "win-x64" ]; then
+          # Pack to zip for Windows
+          7z a -tzip "${release_name}.zip" "./${release_name}/*"
+        else
+        tar czvf "${release_name}.tar.gz" "$release_name"
+        fi        
+        rm -r "$release_name"
+    - name: Publish
+      uses: softprops/action-gh-release@v1
+      with:
+        files: "LazyFetcher*"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
     
-  #   #- name: Test
-  #   #  run: dotnet test --no-build --verbosity normal
-
   docker:
     name: Publish docker images
     strategy:
@@ -73,7 +67,7 @@ jobs:
     runs-on: ${{ matrix.os }}  
     steps:    
     - uses: actions/checkout@v2
-    - name: Login to DockerHub Registry
+    - name: Build and push the image
       shell: bash
       run: |
         echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin    
