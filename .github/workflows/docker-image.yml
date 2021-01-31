@@ -85,9 +85,9 @@ jobs:
             docker_file_name="linux-arm.Dockerfile"
           fi
         docker build . --file $docker_file_name --tag "rhdpin/lazyfetcher:$tag-${{ matrix.kind }}"
-        docker push "rhdpin/lazyfetcher:$tag-${{ matrix.kind }}""
-        docker build . --file $docker_file_name --tag "rhdpin/lazyfetcher:${{ matrix.kind }}""
-        docker push "rhdpin/lazyfetcher:${{ matrix.kind }}""   
+        docker push "rhdpin/lazyfetcher:$tag-${{ matrix.kind }}"
+        docker build . --file $docker_file_name --tag "rhdpin/lazyfetcher:${{ matrix.kind }}"
+        docker push "rhdpin/lazyfetcher:${{ matrix.kind }}"
 
 
 
