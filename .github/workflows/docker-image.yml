@@ -1,14 +1,29 @@
-name: Docker Image CI
+name: Publish
 
 on:
-  push:
-    branches: [ docker ]
-  pull_request:
-    branches: [ master ]
+  release:
+    types: [created]
 
 jobs:
-  publish-linux-x64:
-    runs-on: ubuntu-latest
+  release:
+    name: Release
+    strategy:
+      matrix: 
+        kind: ['linux-arm', 'linux-x64', 'windows', 'macOS']
+        include:
+          - kind: linux-arm
+            os: self-hosted
+            target: linux-arm
+          - kind: linux-x64
+            os: ubuntu-latest
+            target: linux-x64
+          - kind: windows
+            os: windows-latest
+            target: win-x64
+          - kind: macOS
+            os: macos-latest
+            target: osx-x64
+    runs-on: ${{ matrix.os }}  
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -17,43 +32,30 @@ jobs:
         dotnet-version: 5.0.x
     - name: Restore dependencies
       run: dotnet restore src/
-    - name: Build linux-x64
-      run: dotnet publish -c release -r linux-x64 src/       
-    - name: Build win10-x64
-      run: dotnet publish -c release -r win10-x64 src/     
-    - name: Build osx.10.15-x64
-      run: dotnet publish -c release -r osx.10.15-x64 src/        
-    - name: Zip
-      run: |
-        tar -czvf linux-x64.zip src/bin/Release/netcoreapp3.1/linux-x64/publish
-        zip -r win10-x64.zip src/bin/Release/netcoreapp3.1/win10-x64/publish
-        zip -r osx.10.15-x64.zip src/bin/Release/netcoreapp3.1/osx.10.15-x64/publish
-    - uses: actions/upload-artifact@v2
-      with:
-        name: linux-x64
-        path: linux-x64.zip
-    - uses: actions/upload-artifact@v2
-      with:
-        name: win10-x64
-        path: win10-x64.zip
-    - uses: actions/upload-artifact@v2
-      with:
-        name: osx.10.15-x64
-        path: osx.10.15-x64.zip
-  publish-linux-arm:
-    runs-on: self-hosted
-    steps:
-    - uses: actions/checkout@v2    
-    - name: Restore dependencies
-      run: dotnet restore src/
     - name: Build
-      run: dotnet publish -c release -r linux-arm src/           
-    - name: Zip
-      run: tar -czvf linux-arm.zip src/bin/Release/netcoreapp3.1/linux-arm/publish
-    - uses: actions/upload-artifact@v2
-      with:
-        name: linux-arm
-        path: linux-arm.zip
+        shell: bash
+        run: |
+          tag=$(git describe --tags --abbrev=0)
+          release_name="LazyFetcher-${{ matrix.target }}"
+          # Build everything
+          dotnet publish src/ --runtime "${{ matrix.target }}" -c Release -o "$release_name"
+          # Pack files
+          if [ "${{ matrix.target }}" == "win-x64" ]; then
+            # Pack to zip for Windows
+            7z a -tzip "${release_name}.zip" "./${release_name}/*"
+          else
+          tar czvf "${release_name}.tar.gz" "$release_name"
+          fi
+          # Delete output directory
+          rm -r "$release_name"
+    - name: Publish
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "LazyFetcher*"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    
     #- name: Test
     #  run: dotnet test --no-build --verbosity normal
 
