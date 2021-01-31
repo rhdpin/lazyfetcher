@@ -7,7 +7,7 @@ A command-line interface for [LazyMan](https://github.com/StevensNJD4/LazyMan).
 * Download the latest game of given team
 * Get the stream URL to be used by a video player
 
-The application ([.NET Core 3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0)) is basic with many fixed settings and supports only NHL feeds. See also similar (Rust made) application, [LazyStream](https://github.com/tarkah/lazystream). 
+The application ([.NET Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.0)) is basic with many fixed settings and supports only NHL feeds. See also similar (Rust made) application, [LazyStream](https://github.com/tarkah/lazystream). 
 
 ## Requirements 
 * OS: Windows (x86/x64) / MacOS / Linux (x64/ARMv7)
@@ -23,7 +23,7 @@ If hosts file is not edited, [go-mlbam-proxy](https://github.com/jwallet/go-mlba
 Docker method is good because you get all done with one command. Currently the image size is big though (200-300MB). Currently it supports only 'hosts' editing approach, but the good thing is that it does not interfere with hosts file on your Docker host machine, but only the container.
 1. Install Docker on your host
 2. Run the container with command like: 
-`docker run -it --rm -v /mnt/download:/app/download --add-host targethostname:hostipaddress rhdpin/lazyfetcher:linux-x64 -c -p /app/download`
+`docker run -it --rm -v /mnt/download:/app/download --network=host --add-host targethostname:hostipaddress rhdpin/lazyfetcher:linux-x64 -c -p /app/download`
 
 Parameter `-v` binds a folder from host to container. In example command host folder is `/mnt/download` and it's mapped to `/app/download` in container. Parameter `--add-host` adds redirection to `hosts` file of the container, so replace `targethostname` and `hostipaddress` with same values which you use in `hosts` file with LazyMan. 
 
@@ -32,8 +32,7 @@ Parameter `-v` binds a folder from host to container. In example command host fo
 ## Usage
 ```
 $ ./LazyFetcher --help
-LazyFetcher 1.0.4
-Copyright (C) 2019 rhdpin
+LazyFetcher 1.0.5
 
   -c, --choose       Choose the feed from list of found feeds.
 
@@ -65,7 +64,7 @@ Copyright (C) 2019 rhdpin
 Choose the feed from list of found feeds and download it using proxy instead of editing hosts file
 ```
 $ ./LazyFetcher -x -c -p /mnt/download
-LazyFetcher 1.0.4
+LazyFetcher 1.0.5
 
  1: 2019-12-15 PHI@WPG home (TSN3)
  2: 2019-12-15 PHI@WPG away (NBCS-PH+)
@@ -94,7 +93,7 @@ Writing stream to file: 167 MB (11.8 MB/s)
 Get latest game of your favorite team with hosts file edited. It tries to get feed of chosen team (away/home) if available, otherwise it uses first feed found.
 ```
 $ ./LazyFetcher -t DAL -p /mnt/download
-LazyFetcher 1.0.4
+LazyFetcher 1.0.5
 
 Fetching latest feed for 'DAL'...
 Feed found: 2019-12-16 EDM@DAL (home,FSSW+)

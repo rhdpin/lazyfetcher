@@ -1,0 +1,87 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  github:
+    name: Publish binaries to release
+    strategy:
+      matrix: 
+        kind: ['linux-arm', 'linux-x64', 'windows', 'macOS']
+        include:
+          - kind: linux-arm
+            os: self-hosted
+            target: linux-arm
+          - kind: linux-x64
+            os: ubuntu-latest
+            target: linux-x64
+          - kind: windows
+            os: windows-latest
+            target: win-x64
+          - kind: macOS
+            os: macos-latest
+            target: osx-x64
+    runs-on: ${{ matrix.os }}  
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore src/
+    - name: Build
+      shell: bash
+      run: |
+        tag=$(git describe --tags --abbrev=0)
+        release_name="LazyFetcher-${{ matrix.target }}"        
+        dotnet publish src/ --runtime "${{ matrix.target }}" -c Release -o "$release_name"        
+        if [ "${{ matrix.target }}" == "win-x64" ]; then
+          # Pack to zip for Windows
+          7z a -tzip "${release_name}.zip" "./${release_name}/*"
+        else
+        tar czvf "${release_name}.tar.gz" "$release_name"
+        fi        
+        rm -r "$release_name"
+    - name: Publish
+      uses: softprops/action-gh-release@v1
+      with:
+        files: "LazyFetcher*"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
+    
+  docker:
+    name: Publish docker images
+    strategy:
+      matrix: 
+        kind: ['linux-arm32v7', 'linux-x64']
+        include:
+          - kind: linux-arm32v7
+            os: self-hosted
+            target: linux-arm
+          - kind: linux-x64
+            os: ubuntu-latest
+            target: linux-x64          
+    runs-on: ${{ matrix.os }}  
+    steps:    
+    - uses: actions/checkout@v2
+    - name: Build and push the image
+      shell: bash
+      run: |
+        echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin    
+        tag=$(git describe --tags --abbrev=0)
+        docker_file_name=""
+        if [ "${{ matrix.target }}" == "linux-x64" ]; then
+            docker_file_name="linux-x64.Dockerfile"
+          else
+            docker_file_name="linux-arm.Dockerfile"
+          fi
+        docker build . --file $docker_file_name --tag "rhdpin/lazyfetcher:$tag-${{ matrix.kind }}"
+        docker push "rhdpin/lazyfetcher:$tag-${{ matrix.kind }}"
+        docker build . --file $docker_file_name --tag "rhdpin/lazyfetcher:${{ matrix.kind }}"
+        docker push "rhdpin/lazyfetcher:${{ matrix.kind }}"
+
+
+
