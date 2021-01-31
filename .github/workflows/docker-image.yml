@@ -80,9 +80,9 @@ jobs:
         tag=$(git describe --tags --abbrev=0)
         docker_file_name=""
         if [ "${{ matrix.target }}" == "linux-x64" ]; then
-            $docker_file_name = "linux-x64.Dockerfile"
+            $docker_file_name="linux-x64.Dockerfile"
           else
-            $docker_file_name = "linux-arm.Dockerfile"
+            $docker_file_name="linux-arm.Dockerfile"
           fi
         docker build . --file $docker_file_name --tag "rhdpin/lazyfetcher:$tag-${{ matrix.kind }}"
         docker push "rhdpin/lazyfetcher:$tag-${{ matrix.kind }}""
